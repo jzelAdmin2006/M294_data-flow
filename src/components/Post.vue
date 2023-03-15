@@ -1,28 +1,52 @@
 <script setup>
+defineProps({
+  id: {
+    type: Number,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  text: {
+    type: String,
+    required: true
+  },
+  user: {
+    type: String,
+    required: true
+  },
+  votes: {
+    type: Number,
+    required: true
+  }
+})
+
+defineEmits(['voteUp', 'voteDown'])
 </script>
 
 <template>
-  <div class="post">
-    <div class="post__votes voter">
-      <button class="voter__action">
+  <div class="post" v-bind:class="{ 'post--trending': votes >= 10, 'post--spam': votes < 0 }">
+    <div class=" post__votes voter">
+      <button class="voter__action" @click="$emit('voteUp', id)">
         👍
       </button>
       <div class="voter__votes">
-        12
+        {{ votes }}
       </div>
-      <button class="voter__action">
+      <button class="voter__action" @click="$emit('voteDown', id)">
         👎
       </button>
     </div>
     <div class="post__content">
       <div class="post__user">
-        von Benutzername
+        von {{ user }}
       </div>
       <div class="post__title">
-        Post Titel
+        {{ title }}
       </div>
       <div class="post__text">
-        Post Text
+        {{ text }}
       </div>
     </div>
   </div>
@@ -44,7 +68,7 @@
   opacity: .25;
 }
 
-.post + .post {
+.post+.post {
   border-top: 1px solid #fafafa;
 }
 

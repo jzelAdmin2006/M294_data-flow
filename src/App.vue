@@ -1,6 +1,6 @@
 <script setup>
 import { faker } from '@faker-js/faker'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Post from './components/Post.vue'
 
 const posts = ref([
@@ -14,16 +14,32 @@ const posts = ref([
   { id: 8, title: faker.lorem.words(10), text: faker.lorem.paragraph(), user: faker.internet.userName(), votes: 3 },
   { id: 9, title: faker.lorem.words(10), text: faker.lorem.paragraph(), user: faker.internet.userName(), votes: 15 },
 ])
+
+const sortedPosts = computed(() => {
+  return posts.value.sort((a, b) => b.votes - a.votes)
+})
+
+function voteUp(id) {
+  const post = findPostById(id)
+  post.votes++
+  console.log(post)
+}
+
+function voteDown(id) {
+  const post = findPostById(id)
+  post.votes--
+  console.log(post)
+}
+
+function findPostById(id) {
+  return posts.value.find(post => post.id === id)
+}
 </script>
 
 <template>
   <div class="container">
-    <Post
-        title="Der Titel dieses Posts"
-        text="Der Text dieses Posts"
-        user="redd-it-user-123"
-        votes="99"
-    />
+    <Post v-for="post in sortedPosts" :id="post.id" :key="post.id" :title="post.title" :text="post.text" :user="post.user"
+      :votes="post.votes" @voteUp="voteUp" @voteDown="voteDown" />
   </div>
 </template>
 
